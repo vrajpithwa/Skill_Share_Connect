@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "795152336054",
+    "project_id": "skillexchangeplatform",
+    "storage_bucket": "skillexchangeplatform.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795152336054:android:e7e51212d17737a6b9d217",
+        "android_client_info": {
+          "package_name": "com.example.skill_exchange_platform"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795152336054-m0o90h9dsifervcvgab5lcb6fia2drql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6tAvBTHetkuF_dXofdKVT4M_UXzCmwvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795152336054-5fc9glu3eh8rmrra7kr58h8og3apdaia.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "795152336054-36eq4scb4qi1v3vinbblpo8gktem5hms.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "skill.exchange.platform"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:795152336054:android:8cac8119036123e5b9d217",
+        "android_client_info": {
+          "package_name": "com.example.ssc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "795152336054-m0o90h9dsifervcvgab5lcb6fia2drql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6tAvBTHetkuF_dXofdKVT4M_UXzCmwvc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "795152336054-5fc9glu3eh8rmrra7kr58h8og3apdaia.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "795152336054-36eq4scb4qi1v3vinbblpo8gktem5hms.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "skill.exchange.platform"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
