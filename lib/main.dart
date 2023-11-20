@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:ssc/firebase_options.dart';
+import 'package:ssc/screens/home_screen.dart';
+import 'package:ssc/screens/signin_screen.dart';
 import 'package:ssc/screens/splash_screen.dart';
 
 Future<void> main() async {
@@ -21,7 +23,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      // home: SplashScreen(),
+      home: const SignInScreen(),
     );
   }
 }

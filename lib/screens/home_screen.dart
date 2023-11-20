@@ -22,9 +22,14 @@ class _HomeScreenState extends State<HomeScreen> {
       FirebaseFirestore.instance.collection("User Posts").add({
         'UserEmail': currentuser.email,
         'Message': textController.text,
+        'Likes': [],
         'TimeStamp': Timestamp.now(),
       });
     }
+
+    setState(() {
+      textController.clear();
+    });
   }
 
   @override
@@ -120,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       // getting messages from firebase
                       final post = snapshot.data!.docs[index];
                       return Posts(
-                          message: post['Message'], user: post['UserEmail']);
+                          message: post['Message'],
+                          user: post['UserEmail'],
+                          postId: post.id,
+                          likes: List<String>.from(post['Likes'] ?? []));
                     });
               } else if (snapshot.hasError) {
                 return Center(
