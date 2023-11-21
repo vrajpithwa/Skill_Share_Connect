@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ssc/components/drawer.dart';
 import 'package:ssc/screens/posts.dart';
 import 'package:ssc/screens/signin_screen.dart';
 import 'package:ssc/utils/color_utils.dart';
@@ -71,6 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      drawer: MyDrawer(),
       body: Center(
           child: Column(
         children: [
