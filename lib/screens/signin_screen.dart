@@ -18,6 +18,14 @@ FirebaseAuth auth = FirebaseAuth.instance;
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
+  bool _isPasswordVisible = false;
+
+ void togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,8 +53,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Enter Password", Icons.lock_outline, true,
-                    _passwordTextController),
+                reusableTextField1("Enter Password", Icons.lock_outline, true,
+                    _passwordTextController,_isPasswordVisible,
+          togglePasswordVisibility,),
                 const SizedBox(
                   height: 5,
                 ),
@@ -72,6 +81,8 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+
+    
   }
 
   Row signUpOption() {

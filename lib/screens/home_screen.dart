@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'TimeStamp': Timestamp.now(),
       });
     }
+
     print(imageUrl);
     setState(() {
       textController.clear();
@@ -114,7 +115,6 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             },
           ),
-          Text("logged in as: ${currentuser.email!}"),
           Expanded(
               child: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -172,40 +172,44 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(
                                 right:
                                     5.0), // Adjust the left padding as needed
-                            child: IconButton(
-                              icon: const Icon(Icons.camera_alt),
-                              onPressed: () async {
-                                ImagePicker imagePicker = ImagePicker();
-                                XFile? file = await imagePicker.pickImage(
-                                    source: ImageSource.gallery);
+                            child:IconButton(
+                                    icon: const Icon(Icons.camera_alt),
+                                    onPressed: () async {
+                                      ImagePicker imagePicker = ImagePicker();
+                                      XFile? file = await imagePicker.pickImage(
+                                          source: ImageSource.gallery);
 
-                                String uniqFileName = DateTime.now()
-                                    .millisecondsSinceEpoch
-                                    .toString();
-                                Reference referenceRoot =
-                                    FirebaseStorage.instance.ref();
-                                Reference referenceDirImages =
-                                    referenceRoot.child('images');
+                                      String uniqFileName = DateTime.now()
+                                          .millisecondsSinceEpoch
+                                          .toString();
+                                      Reference referenceRoot =
+                                          FirebaseStorage.instance.ref();
+                                      Reference referenceDirImages =
+                                          referenceRoot.child('images');
 
-                                Reference referenceImageToUpload =
-                                    referenceDirImages.child(uniqFileName);
+                                      Reference referenceImageToUpload =
+                                          referenceDirImages
+                                              .child(uniqFileName);
 
-                                try {
-                                  //storing the file
-                                  await referenceImageToUpload
-                                      .putFile(File(file!.path));
-                                  //success get the download url
-                                  imageUrl = await referenceImageToUpload
-                                      .getDownloadURL();
-                                } catch (error) {}
-                              },
-                            ),
+                                      try {
+                                        //storing the file
+                                        await referenceImageToUpload
+                                            .putFile(File(file!.path));
+                                        //success get the download url
+                                        imageUrl = await referenceImageToUpload
+                                            .getDownloadURL();
+                                      } catch (error) {}
+                                    },
+                                  ),
                           ),
                         ),
                       ),
+                      
                     ),
+                    
                   ),
                 ),
+                
                 Container(
                   decoration: BoxDecoration(
                     color: hexStringToColor(
@@ -222,7 +226,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-          )
+            
+          ),
+          Text("logged in as: ${currentuser.email!}"),
         ],
       )),
     );

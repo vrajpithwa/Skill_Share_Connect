@@ -23,11 +23,12 @@ class MyApp extends StatelessWidget {
       title: 'SkillExchangePlatform',
 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(0, 100, 0, 188)),
         useMaterial3: true,
       ),
-      home: SplashScreen(),
-      // home: const HomeScreen(),
+      home: SignInScreen(),
+      // home: HomeScreen(),
     );
   }
 }

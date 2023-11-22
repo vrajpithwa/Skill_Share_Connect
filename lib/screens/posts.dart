@@ -10,14 +10,15 @@ class Posts extends StatefulWidget {
   final String postId;
   final List<String> likes;
   final String imageUrl;
+
   const Posts({
-    Key? key,
+    super.key,
     required this.message,
     required this.imageUrl,
     required this.user,
     required this.postId,
     required this.likes,
-  }) : super(key: key);
+  });
 
   @override
   State<Posts> createState() => _PostsState();
@@ -61,8 +62,17 @@ class _PostsState extends State<Posts> {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: hexStringToColor("fff1f1"),
-          border: Border.all(color: Colors.black),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey
+                  .withOpacity(0.5), // Change the shadow color as needed
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 2), // Adjust the position of the shadow
+            ),
+          ],
+          color: hexStringToColor("ffffff"),
+          border: Border.all(color: const Color.fromARGB(28, 0, 0, 0)),
           borderRadius: const BorderRadius.all(
             Radius.circular(5.0),
           ), // Adjust the border radius as needed
@@ -79,7 +89,7 @@ class _PostsState extends State<Posts> {
                     shape: BoxShape.circle,
                     color: Colors.grey[400],
                   ),
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: const Icon(
                     Icons.person,
                     color: Colors.white,
@@ -110,12 +120,20 @@ class _PostsState extends State<Posts> {
                 ),
               ],
             ),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
-              child: Image.network(
-                widget.imageUrl,
-                fit: BoxFit.cover,
-                height: 200, // Adjust the height as needed
-              ),
+              child: widget.imageUrl.isNotEmpty
+                  ? Image.network(
+                      widget.imageUrl,
+                      fit: BoxFit.cover,
+                      height: 500, // Adjust the height as needed
+                    )
+                  : Container(
+                      height: 0,
+                      width: 0,
+                    ), // You can replace Placeholder() with any widget you want to show when imageUrl is empty
             )
           ],
         ));
