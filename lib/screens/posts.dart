@@ -9,9 +9,11 @@ class Posts extends StatefulWidget {
   final String message;
   final String postId;
   final List<String> likes;
+  final String imageUrl;
   const Posts({
     Key? key,
     required this.message,
+    required this.imageUrl,
     required this.user,
     required this.postId,
     required this.likes,
@@ -58,54 +60,64 @@ class _PostsState extends State<Posts> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: hexStringToColor("a8dadc"),
-        border: Border.all(color: Colors.black),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(5.0),
-        ), // Adjust the border radius as needed
-      ),
-      margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        children: [
-          // Profile Pic
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.grey[400],
-            ),
-            padding: EdgeInsets.all(10),
-            child: const Icon(
-              Icons.person,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          // Post Content
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        decoration: BoxDecoration(
+          color: hexStringToColor("fff1f1"),
+          border: Border.all(color: Colors.black),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(5.0),
+          ), // Adjust the border radius as needed
+        ),
+        margin: const EdgeInsets.only(top: 5, left: 5, right: 5),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Row(
               children: [
-                Text(
-                  widget.user,
-                  style: TextStyle(color: Colors.grey[500]),
+                // Profile Pic
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey[400],
+                  ),
+                  padding: EdgeInsets.all(10),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
                 ),
-                Text(widget.message),
+                const SizedBox(
+                  width: 10,
+                ),
+                // Post Content
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.user,
+                        style: TextStyle(color: Colors.grey[500]),
+                      ),
+                      Text(widget.message),
+                    ],
+                  ),
+                ),
+                // Like button
+                Column(
+                  children: [
+                    LikeButton(isLiked: isLiked, onTap: toggleLike),
+                    Text(widget.likes.length.toString()),
+                  ],
+                ),
               ],
             ),
-          ),
-          // Like button
-          Column(
-            children: [
-              LikeButton(isLiked: isLiked, onTap: toggleLike),
-              Text(widget.likes.length.toString()),
-            ],
-          ),
-        ],
-      ),
-    );
+            Container(
+              child: Image.network(
+                widget.imageUrl,
+                fit: BoxFit.cover,
+                height: 200, // Adjust the height as needed
+              ),
+            )
+          ],
+        ));
   }
 }

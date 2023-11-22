@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:ssc/components/drawer.dart';
 import 'package:ssc/screens/posts.dart';
 import 'package:ssc/screens/signin_screen.dart';
@@ -15,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final currentuser = FirebaseAuth.instance.currentUser!;
-
+  String imageUrl = '';
   final textController = TextEditingController();
 
   void postMessage() {
@@ -24,10 +28,11 @@ class _HomeScreenState extends State<HomeScreen> {
         'UserEmail': currentuser.email,
         'Message': textController.text,
         'Likes': [],
+        'image': imageUrl,
         'TimeStamp': Timestamp.now(),
       });
     }
-
+    print(imageUrl);
     setState(() {
       textController.clear();
     });
@@ -130,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           message: post['Message'],
                           user: post['UserEmail'],
                           postId: post.id,
+                          imageUrl: post['image'],
                           likes: List<String>.from(post['Likes'] ?? []));
                     });
               } else if (snapshot.hasError) {
@@ -167,9 +173,31 @@ class _HomeScreenState extends State<HomeScreen> {
                                 right:
                                     5.0), // Adjust the left padding as needed
                             child: IconButton(
-                              icon: const Icon(Icons.open_in_new),
-                              onPressed: () {
-                                // Handle the button press
+                              icon: const Icon(Icons.camera_alt),
+                              onPressed: () async {
+                                ImagePicker imagePicker = ImagePicker();
+                                XFile? file = await imagePicker.pickImage(
+                                    source: ImageSource.gallery);
+
+                                String uniqFileName = DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString();
+                                Reference referenceRoot =
+                                    FirebaseStorage.instance.ref();
+                                Reference referenceDirImages =
+                                    referenceRoot.child('images');
+
+                                Reference referenceImageToUpload =
+                                    referenceDirImages.child(uniqFileName);
+
+                                try {
+                                  //storing the file
+                                  await referenceImageToUpload
+                                      .putFile(File(file!.path));
+                                  //success get the download url
+                                  imageUrl = await referenceImageToUpload
+                                      .getDownloadURL();
+                                } catch (error) {}
                               },
                             ),
                           ),
@@ -255,6 +283,5 @@ class _CategoryCardState extends State<CategoryCard> {
     );
   }
 }
-
 
 //*****************************************   End of category view   **********************************************

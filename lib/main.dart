@@ -15,17 +15,19 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'SkillExchangePlatform',
+
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // home: SplashScreen(),
-      home: const SignInScreen(),
+      home: SplashScreen(),
+      // home: const HomeScreen(),
     );
   }
 }
