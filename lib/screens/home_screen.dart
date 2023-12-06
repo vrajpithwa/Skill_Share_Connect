@@ -1,12 +1,16 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ssc/components/drawer.dart';
+import 'package:ssc/screens/Quote.dart';
 import 'package:ssc/screens/posts.dart';
+import 'package:ssc/screens/profile.dart';
 import 'package:ssc/screens/signin_screen.dart';
 import 'package:ssc/utils/color_utils.dart';
 
@@ -22,16 +26,90 @@ class _HomeScreenState extends State<HomeScreen> {
   String imageUrl = '';
   final textController = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    // Add this line to fetch and display a quote when the home screen is loaded
+    Timer(Duration(milliseconds: 500), () => fetchAndShowQuote());
+  }
+
+  Future<void> fetchAndShowQuote() async {
+    try {
+      final response =
+          await http.get(Uri.parse('https://zenquotes.io/api/random/'));
+      if (response.statusCode == 200) {
+        final quoteData = json.decode(response.body);
+        final quote = Quote(
+          text: quoteData[0]['q'],
+          author: quoteData[0]['a'],
+        );
+
+        // Show the quote in the dialog
+        showQuoteDialog(context, quote.text, quote.author);
+      } else {
+        throw Exception('Failed to load quote');
+      }
+    } catch (e) {
+      print('Error fetching quote: $e');
+    }
+  }
+
+  void showQuoteDialog(BuildContext context, String text, String author) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Scaffold(
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                AlertDialog(
+                  title: Text(text),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "~ $author",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '"Fuel your day with inspiration! 🌟 Read the Quote of the Day on Skill Share Connect and let motivation drive your success."',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   void postMessage() {
     if (textController.text.isNotEmpty) {
       FirebaseFirestore.instance.collection("User Posts").add({
-        'UserEmail': currentuser.email,
-        'Message': textController.text,
-        'Likes': [],
-        'image': imageUrl,
+        'UserEmail': currentuser.email ?? '',
+        'Message': textController.text ?? '',
+        'Likes': [] ?? '',
+        'image': imageUrl ?? '',
         'TimeStamp': Timestamp.now(),
       });
-    }
+    } 
 
     print(imageUrl);
     setState(() {
@@ -39,10 +117,21 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void goToprofile() {
+    Navigator.pop(context);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text(
           'SkillShareConnect',
           style: TextStyle(
@@ -50,35 +139,26 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: 27.0,
           ),
         ),
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Icons.messenger_rounded),
             onPressed: () {
               // Handle notifications
             },
           ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              // Handle user profile
-            },
-          ),
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  child: const Text('Settings'),
-                  onTap: () {
-                    // Handle settings
-                  },
-                ),
-              ];
-            },
-          ),
         ],
       ),
-      drawer: MyDrawer(),
+      drawer: MyDrawer(
+        onLogout: () {
+          FirebaseAuth.instance.signOut().then((value) {
+            print("Signed Out");
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SignInScreen()));
+          });
+        },
+        onProfile: goToprofile,
+      ),
       body: Center(
           child: Column(
         children: [
@@ -103,18 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          ElevatedButton(
-            child: const Text("Logout"),
-            onPressed: () {
-              FirebaseAuth.instance.signOut().then((value) {
-                print("Signed Out");
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignInScreen()));
-              });
-            },
-          ),
           Expanded(
               child: StreamBuilder(
             stream: FirebaseFirestore.instance
@@ -136,6 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           user: post['UserEmail'],
                           postId: post.id,
                           imageUrl: post['image'],
+                          postTime: post['TimeStamp'],
                           likes: List<String>.from(post['Likes'] ?? []));
                     });
               } else if (snapshot.hasError) {
@@ -159,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Expanded(
                       child: TextField(
                         controller: textController,
+                        maxLines: null,
                         decoration: InputDecoration(
                           hintText: "Write text",
                           border: const OutlineInputBorder(
@@ -172,44 +242,43 @@ class _HomeScreenState extends State<HomeScreen> {
                             padding: const EdgeInsets.only(
                                 right:
                                     5.0), // Adjust the left padding as needed
-                            child:IconButton(
-                                    icon: const Icon(Icons.camera_alt),
-                                    onPressed: () async {
-                                      ImagePicker imagePicker = ImagePicker();
-                                      XFile? file = await imagePicker.pickImage(
-                                          source: ImageSource.gallery);
+                            child: IconButton(
+                              icon: const Icon(Icons.camera_alt),
+                              onPressed: () async {
+                                ImagePicker imagePicker = ImagePicker();
+                                XFile? file = await imagePicker.pickImage(
+                                    source: ImageSource.gallery);
 
-                                      String uniqFileName = DateTime.now()
-                                          .millisecondsSinceEpoch
-                                          .toString();
-                                      Reference referenceRoot =
-                                          FirebaseStorage.instance.ref();
-                                      Reference referenceDirImages =
-                                          referenceRoot.child('images');
+                                String uniqFileName = DateTime.now()
+                                    .millisecondsSinceEpoch
+                                    .toString();
+                                Reference referenceRoot =
+                                    FirebaseStorage.instance.ref();
+                                Reference referenceDirImages =
+                                    referenceRoot.child('images');
 
-                                      Reference referenceImageToUpload =
-                                          referenceDirImages
-                                              .child(uniqFileName);
+                                Reference referenceImageToUpload =
+                                    referenceDirImages.child(uniqFileName);
 
-                                      try {
-                                        //storing the file
-                                        await referenceImageToUpload
-                                            .putFile(File(file!.path));
-                                        //success get the download url
-                                        imageUrl = await referenceImageToUpload
-                                            .getDownloadURL();
-                                      } catch (error) {}
-                                    },
-                                  ),
+                                try {
+                                  //storing the file
+                                  await referenceImageToUpload
+                                      .putFile(File(file!.path));
+                                  //success get the download url
+                                  imageUrl = await referenceImageToUpload
+                                      .getDownloadURL();
+                                  print(imageUrl);
+                                } catch (error) {
+                                  print(error);
+                                }
+                              },
+                            ),
                           ),
                         ),
                       ),
-                      
                     ),
-                    
                   ),
                 ),
-                
                 Container(
                   decoration: BoxDecoration(
                     color: hexStringToColor(
@@ -226,9 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            
           ),
-          Text("logged in as: ${currentuser.email!}"),
         ],
       )),
     );
@@ -270,8 +337,9 @@ class _CategoryCardState extends State<CategoryCard> {
       padding: const EdgeInsets.all(5.0),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color:
-              widget.category.isSelected ? Colors.white : Colors.transparent),
+          color: widget.category.isSelected
+              ? Theme.of(context).colorScheme.primary
+              : Colors.transparent),
       child: TextButton(
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.all(Colors.transparent),
@@ -282,7 +350,9 @@ class _CategoryCardState extends State<CategoryCard> {
         child: Text(
           widget.category.title,
           style: TextStyle(
-            color: widget.category.isSelected ? Colors.black : Colors.grey,
+            color: widget.category.isSelected
+                ? Theme.of(context).colorScheme.tertiary
+                : Theme.of(context).colorScheme.secondary,
           ),
         ),
       ),

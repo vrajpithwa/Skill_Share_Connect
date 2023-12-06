@@ -41,7 +41,7 @@ TextField reusableTextField(String text, IconData icon, bool isPasswordType,
 
 TextField reusableTextField1(
   String text,
-  IconData icon,
+  IconData icon,  
   bool isPasswordType,
   TextEditingController controller,
   bool isPasswordVisible,

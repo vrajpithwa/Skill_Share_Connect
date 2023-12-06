@@ -48,6 +48,13 @@ dependencies:
   image_editor: ^1.3.0
   image_picker: ^1.0.4  
   file_picker: ^6.1.1
+  intl: ^0.18.1
+  image_editor_plus: ^1.0.5
+  firebase_messaging: ^14.7.6
+  http: ^1.1.2
+  
+ 
+ 
 
 dev_dependencies:
   flutter_test:
