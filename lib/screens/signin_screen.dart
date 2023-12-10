@@ -34,6 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
         builder: (context) => AlertDialog(
               title: Text(message),
             ));
+    Navigator.pop(context);
   }
 
   @override

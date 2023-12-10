@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:ssc/api/firebase_api.dart';
 import 'package:ssc/firebase_options.dart';
 import 'package:ssc/screens/home_screen.dart';
+import 'package:ssc/screens/logini.dart';
+import 'package:ssc/screens/otpveri.dart';
 import 'package:ssc/screens/signin_screen.dart';
 import 'package:ssc/screens/splash_screen.dart';
+import 'package:ssc/screens/upi_payment.dart';
 import 'package:ssc/theme/darkTheme.dart';
 import 'package:ssc/theme/lightTheme.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,9 +33,10 @@ class MyApp extends StatelessWidget {
       title: 'SkillExchangePlatform',
       theme: lightTheme,
       darkTheme: darkTheme,
-        home: SplashScreen(),
+      home: SplashScreen(),
       // home: HomeScreen(),
       // home: SignInScreen(),
+      // home: LoginScreen(),
     );
   }
 }

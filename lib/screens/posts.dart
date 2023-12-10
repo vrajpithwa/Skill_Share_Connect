@@ -14,6 +14,7 @@ class Posts extends StatefulWidget {
   final List<String> likes;
   final String imageUrl;
   final Timestamp postTime;
+  final String category;
 
   const Posts({
     super.key,
@@ -23,6 +24,7 @@ class Posts extends StatefulWidget {
     required this.postId,
     required this.postTime,
     required this.likes,
+    required this.category,
   });
 
   @override
@@ -178,6 +180,11 @@ class _PostsState extends State<Posts> {
                             style: TextStyle(color: Colors.grey[500]),
                           ),
                           Text(widget.message),
+                          Text(
+                            "#" + widget.category,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                          ),
                           // Text(widget.postTime.toString()),
                         ],
                       ),

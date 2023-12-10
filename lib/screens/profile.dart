@@ -138,6 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   .map((post) => Posts(
                                         message: post['Message'],
                                         user: post['UserEmail'],
+                                        category: post['Category'],
                                         postId: post.id,
                                         imageUrl: post['image'],
                                         postTime: post['TimeStamp'],
